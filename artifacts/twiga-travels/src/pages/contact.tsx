@@ -1,45 +1,29 @@
-import { Layout } from "@/components/layout/Layout"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { useCreateInquiry } from "@workspace/api-client-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MapPin, Phone, Mail } from "lucide-react"
-import { toast } from "sonner"
+import { Layout } from '@/components/layout/Layout'
+import { Button } from '@/components/ui/button'
+import { MapPin, Phone, Mail, MessageSquare } from 'lucide-react'
+import { useUI } from '@/context/ui-context'
+import { motion } from 'framer-motion'
 
-const inquirySchema = z.object({
-  full_name: z.string().min(2, "Name is required"),
-  email: z.string().email("Valid email is required"),
-  phone: z.string().optional(),
-  message: z.string().min(10, "Please provide more details in your message"),
-})
+const contactDetails = [
+  {
+    icon: MapPin,
+    label: 'Nairobi Office',
+    lines: ['123 Safari Way, Westlands', 'Nairobi, Kenya'],
+  },
+  {
+    icon: Phone,
+    label: 'Phone',
+    lines: ['+254 700 000 000', '+1 (800) 123 4567 (US Toll Free)'],
+  },
+  {
+    icon: Mail,
+    label: 'Email',
+    lines: ['hello@twigatravels.example.com', 'bookings@twigatravels.example.com'],
+  },
+]
 
 export default function Contact() {
-  const createInquiry = useCreateInquiry()
-
-  const form = useForm<z.infer<typeof inquirySchema>>({
-    resolver: zodResolver(inquirySchema),
-    defaultValues: {
-      full_name: "",
-      email: "",
-      phone: "",
-      message: "",
-    },
-  })
-
-  const onSubmit = (data: z.infer<typeof inquirySchema>) => {
-    createInquiry.mutate({ data }, {
-      onSuccess: () => {
-        toast.success("Message sent successfully!", {
-          description: "We'll get back to you as soon as possible."
-        })
-        form.reset()
-      }
-    })
-  }
+  const { openInquiry } = useUI()
 
   return (
     <Layout>
@@ -47,118 +31,111 @@ export default function Contact() {
         <div className="container mx-auto px-4 md:px-6 text-center max-w-2xl">
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Get in Touch</h1>
           <p className="text-lg text-muted-foreground">
-            Have a question about our safaris or want to start planning a custom journey? We're here to help.
+            Have a question about our safaris or want to start planning a custom journey?
+            We're here to help.
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 py-16">
-        <div className="grid md:grid-cols-2 gap-16 max-w-5xl mx-auto">
-          
-          <div>
-            <h2 className="text-2xl font-serif font-bold mb-6">Contact Information</h2>
-            <div className="space-y-6 text-muted-foreground">
-              <div className="flex items-start gap-4">
+      <div className="container mx-auto px-4 md:px-6 py-20">
+        <div className="grid md:grid-cols-2 gap-16 max-w-4xl mx-auto items-start">
+
+          {/* Contact info */}
+          <div className="space-y-8">
+            <h2 className="text-2xl font-serif font-bold">Contact Information</h2>
+
+            {contactDetails.map(({ icon: Icon, label, lines }) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                className="flex items-start gap-4"
+              >
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <MapPin className="text-primary w-5 h-5" />
+                  <Icon className="text-primary w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground">Nairobi Office</h4>
-                  <p>123 Safari Way, Westlands<br/>Nairobi, Kenya</p>
+                  <h4 className="font-semibold text-foreground">{label}</h4>
+                  {lines.map(line => (
+                    <p key={line} className="text-muted-foreground text-sm">{line}</p>
+                  ))}
                 </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Phone className="text-primary w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground">Phone</h4>
-                  <p>+254 700 000 000<br/>+1 (800) 123 4567 (US Toll Free)</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Mail className="text-primary w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-foreground">Email</h4>
-                  <p>hello@twigatravels.example.com<br/>bookings@twigatravels.example.com</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-12 p-6 bg-muted rounded-xl">
+              </motion.div>
+            ))}
+
+            <div className="p-6 bg-muted rounded-xl">
               <h3 className="font-serif font-bold mb-2">Office Hours</h3>
-              <p className="text-sm text-muted-foreground mb-1">Monday - Friday: 8:00 AM - 6:00 PM EAT</p>
-              <p className="text-sm text-muted-foreground">Saturday: 9:00 AM - 1:00 PM EAT</p>
+              <p className="text-sm text-muted-foreground mb-1">
+                Monday – Friday: 8:00 AM – 6:00 PM EAT
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Saturday: 9:00 AM – 1:00 PM EAT
+              </p>
             </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl font-serif font-bold mb-6">Send a Message</h2>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="full_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="your@email.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="+1 234 567 8900" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="message"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Message</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="How can we help you?" className="h-32" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" size="lg" className="w-full rounded-full" disabled={createInquiry.isPending}>
-                  {createInquiry.isPending ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            </Form>
-          </div>
+          {/* CTA panel */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.1 }}
+            className="bg-card border rounded-2xl p-8 shadow-lg flex flex-col items-start gap-6"
+          >
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <MessageSquare className="w-7 h-7 text-primary" />
+            </div>
 
+            <div>
+              <h2 className="text-2xl font-serif font-bold mb-2">Send a Message</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Fill out a quick form and one of our safari specialists will get back to you
+                within 24 hours.
+              </p>
+            </div>
+
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                General trip planning questions
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                Custom itinerary requests
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                Group &amp; corporate bookings
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                Any other enquiry
+              </li>
+            </ul>
+
+            <Button
+              size="lg"
+              className="rounded-full w-full mt-2 shadow-sm"
+              onClick={openInquiry}
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Open Message Form
+            </Button>
+
+            <p className="text-xs text-muted-foreground text-center w-full -mt-2">
+              Or WhatsApp us directly at{' '}
+              <a
+                href="https://wa.me/254700000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                +254 700 000 000
+              </a>
+            </p>
+          </motion.div>
         </div>
       </div>
     </Layout>

@@ -4,13 +4,15 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { ThemeProvider } from '@/components/theme-provider';
+import { UIProvider } from '@/context/ui-context';
+import { BookingSheet } from '@/components/BookingSheet';
+import { InquirySheet } from '@/components/InquirySheet';
+import { TourQuickViewModal } from '@/components/TourQuickViewModal';
 
 // Pages
 import Home from '@/pages/home';
 import Tours from '@/pages/tours';
 import TourDetail from '@/pages/tour-detail';
-import Booking from '@/pages/booking';
-import BookingConfirmation from '@/pages/booking-confirmation';
 import About from '@/pages/about';
 import Contact from '@/pages/contact';
 
@@ -18,8 +20,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-    }
-  }
+    },
+  },
 });
 
 function Router() {
@@ -28,8 +30,6 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/tours" component={Tours} />
       <Route path="/tours/:slug" component={TourDetail} />
-      <Route path="/booking" component={Booking} />
-      <Route path="/booking/confirmation" component={BookingConfirmation} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
@@ -41,12 +41,18 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="savanna" storageKey="twiga-theme">
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-            <Router />
-          </WouterRouter>
-          <Toaster position="top-center" />
-        </TooltipProvider>
+        <UIProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+              <Router />
+            </WouterRouter>
+            {/* Global overlays — rendered once, accessible from anywhere */}
+            <BookingSheet />
+            <InquirySheet />
+            <TourQuickViewModal />
+            <Toaster position="top-center" />
+          </TooltipProvider>
+        </UIProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
