@@ -34,7 +34,9 @@ _Describe the high-level user-facing capabilities of this app once they exist._
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- **UX pattern hierarchy:** Prefer modal for viewing details → side sheet/drawer for forms or editing → new page only for large multi-step workflows. Always evaluate this before creating a new route.
+- **Component standards:** TypeScript, Tailwind CSS, Framer Motion, shadcn/ui. Clean, reusable, scalable. Accessibility best practices (ARIA, keyboard nav). No unnecessary re-renders (memo, useCallback where it matters).
+- **Role:** Treat responses as a senior React developer — reason about trade-offs, not just implement.
 
 ## Gotchas
 
