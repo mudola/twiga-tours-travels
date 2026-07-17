@@ -3,13 +3,22 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Twiga Travels & Tours API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: tours
+    description: Tour packages
+  - name: bookings
+    description: Booking inquiries
+  - name: inquiries
+    description: General inquiries
+  - name: destinations
+    description: Destination discovery
+
 paths:
   /healthz:
     get:
@@ -24,6 +33,169 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /tours:
+    get:
+      operationId: listTours
+      tags: [tours]
+      summary: List tour packages
+      parameters:
+        - name: destination
+          in: query
+          schema:
+            type: string
+        - name: min_duration
+          in: query
+          schema:
+            type: integer
+        - name: max_duration
+          in: query
+          schema:
+            type: integer
+        - name: min_price
+          in: query
+          schema:
+            type: number
+        - name: max_price
+          in: query
+          schema:
+            type: number
+        - name: activity_type
+          in: query
+          schema:
+            type: string
+        - name: is_featured
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of tours
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tour"
+
+  /tours/featured:
+    get:
+      operationId: getFeaturedTours
+      tags: [tours]
+      summary: Get featured tours for the homepage
+      responses:
+        "200":
+          description: Featured tours
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tour"
+
+  /tours/stats:
+    get:
+      operationId: getTourStats
+      tags: [tours]
+      summary: Get aggregate stats about the tour catalog
+      responses:
+        "200":
+          description: Tour statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TourStats"
+
+  /tours/{slug}:
+    get:
+      operationId: getTourBySlug
+      tags: [tours]
+      summary: Get a single tour by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Tour detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tour"
+        "404":
+          description: Tour not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /destinations:
+    get:
+      operationId: listDestinations
+      tags: [destinations]
+      summary: List all available destinations
+      responses:
+        "200":
+          description: List of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Destination"
+
+  /bookings:
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Submit a booking inquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingInput"
+      responses:
+        "201":
+          description: Booking inquiry submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /inquiries:
+    post:
+      operationId: createInquiry
+      tags: [inquiries]
+      summary: Submit a general inquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InquiryInput"
+      responses:
+        "201":
+          description: Inquiry submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +206,245 @@ components:
       required:
         - status
 
+    Tour:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - destination
+        - duration_days
+        - price_from
+        - summary
+        - is_featured
+        - activity_type
+        - gallery_urls
+        - itinerary
+        - inclusions
+        - exclusions
+        - created_at
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        destination:
+          type: string
+        duration_days:
+          type: integer
+        price_from:
+          type: number
+        summary:
+          type: string
+        activity_type:
+          type: string
+        gallery_urls:
+          type: array
+          items:
+            type: string
+        itinerary:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItineraryDay"
+        inclusions:
+          type: array
+          items:
+            type: string
+        exclusions:
+          type: array
+          items:
+            type: string
+        is_featured:
+          type: boolean
+        max_group_size:
+          type: ["integer", "null"]
+        created_at:
+          type: string
+
+    ItineraryDay:
+      type: object
+      required:
+        - day
+        - title
+        - description
+      properties:
+        day:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        accommodation:
+          type: ["string", "null"]
+        meals:
+          type: ["string", "null"]
+
+    Destination:
+      type: object
+      required:
+        - name
+        - tour_count
+        - image_url
+      properties:
+        name:
+          type: string
+        tour_count:
+          type: integer
+        image_url:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+
+    TourStats:
+      type: object
+      required:
+        - total_tours
+        - destinations_count
+        - min_price
+        - max_price
+        - activity_types
+      properties:
+        total_tours:
+          type: integer
+        destinations_count:
+          type: integer
+        min_price:
+          type: number
+        max_price:
+          type: number
+        activity_types:
+          type: array
+          items:
+            type: string
+
+    BookingInput:
+      type: object
+      required:
+        - full_name
+        - email
+        - phone
+        - travel_start_date
+        - num_travelers
+      properties:
+        tour_id:
+          type: ["string", "null"]
+        tour_title:
+          type: ["string", "null"]
+        full_name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+        phone:
+          type: string
+          minLength: 1
+        travel_start_date:
+          type: string
+        travel_end_date:
+          type: ["string", "null"]
+        num_travelers:
+          type: integer
+          minimum: 1
+        accommodation_level:
+          type: ["string", "null"]
+        special_requests:
+          type: ["string", "null"]
+        add_ons:
+          type: array
+          items:
+            type: string
+
+    Booking:
+      type: object
+      required:
+        - id
+        - full_name
+        - email
+        - phone
+        - travel_start_date
+        - num_travelers
+        - status
+        - created_at
+      properties:
+        id:
+          type: string
+        tour_id:
+          type: ["string", "null"]
+        tour_title:
+          type: ["string", "null"]
+        full_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        travel_start_date:
+          type: string
+        travel_end_date:
+          type: ["string", "null"]
+        num_travelers:
+          type: integer
+        accommodation_level:
+          type: ["string", "null"]
+        special_requests:
+          type: ["string", "null"]
+        add_ons:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+        created_at:
+          type: string
+
+    InquiryInput:
+      type: object
+      required:
+        - full_name
+        - email
+        - message
+      properties:
+        full_name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+        phone:
+          type: ["string", "null"]
+        message:
+          type: string
+          minLength: 1
+
+    Inquiry:
+      type: object
+      required:
+        - id
+        - full_name
+        - email
+        - message
+        - created_at
+      properties:
+        id:
+          type: string
+        full_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        message:
+          type: string
+        created_at:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string

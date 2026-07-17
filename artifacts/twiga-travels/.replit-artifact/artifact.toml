@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Twiga Travels & Tours"
+version = "1.0.0"
+id = "artifacts/twiga-travels"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25821
+
+[services.development]
+run = "pnpm --filter @workspace/twiga-travels run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/twiga-travels", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/twiga-travels/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25821"
+BASE_PATH = "/"
