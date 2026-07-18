@@ -13,14 +13,15 @@ import { TourQuickViewModal } from '@/components/TourQuickViewModal';
 import Home from '@/pages/home';
 import Tours from '@/pages/tours';
 import TourDetail from '@/pages/tour-detail';
+import Destinations from '@/pages/destinations';
+import Gallery from '@/pages/gallery';
+import Blog from '@/pages/blog';
 import About from '@/pages/about';
 import Contact from '@/pages/contact';
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
+    queries: { refetchOnWindowFocus: false },
   },
 });
 
@@ -30,6 +31,9 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/tours" component={Tours} />
       <Route path="/tours/:slug" component={TourDetail} />
+      <Route path="/destinations" component={Destinations} />
+      <Route path="/gallery" component={Gallery} />
+      <Route path="/blog" component={Blog} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
@@ -46,7 +50,6 @@ function App() {
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
               <Router />
             </WouterRouter>
-            {/* Global overlays — rendered once, accessible from anywhere */}
             <BookingSheet />
             <InquirySheet />
             <TourQuickViewModal />
