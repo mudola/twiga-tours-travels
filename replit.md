@@ -1,6 +1,6 @@
-# [Project name]
+# Twiga Travels & Tours
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A premium East African safari and travel booking web app — users can browse tours, explore destinations, and submit booking inquiries.
 
 ## Run & Operate
 

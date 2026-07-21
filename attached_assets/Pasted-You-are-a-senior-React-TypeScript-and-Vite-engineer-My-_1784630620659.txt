@@ -1,0 +1,80 @@
+You are a senior React, TypeScript, and Vite engineer.
+
+My project has become disorganized after multiple edits and migrations. I want you to restructure it into a clean, standard Vite + React + TypeScript project that runs correctly with `npm install` and `npm run dev`.
+
+Requirements:
+
+1. Audit the entire project structure.
+2. Detect duplicate, obsolete, and conflicting files.
+3. Keep ALL application features, pages, components, assets, and business logic intact.
+4. Reorganize the project to follow the standard Vite structure.
+
+The project should look similar to:
+
+/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── features/
+│   ├── layouts/
+│   ├── pages/
+│   ├── hooks/
+│   ├── services/
+│   ├── context/
+│   ├── utils/
+│   ├── types/
+│   ├── styles/
+│   ├── App.tsx
+│   └── main.tsx
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── index.html
+├── .gitignore
+├── .env.example
+└── README.md
+
+Tasks:
+- Ensure React, ReactDOM, Vite and TypeScript are correctly configured.
+- Repair package.json.
+- Remove duplicate dependencies.
+- Install any missing dependencies.
+- Ensure vite.config.ts is valid.
+- Ensure tsconfig.json is valid.
+- Fix broken import paths.
+- Remove orphaned files.
+- Remove unused code where safe.
+- Update aliases if used.
+- Verify Tailwind CSS is correctly configured.
+- Verify PostCSS configuration.
+- Verify eslint configuration.
+- Verify environment variables.
+- Ensure npm scripts are correct.
+
+package.json scripts should include:
+
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "lint": "eslint ."
+}
+
+After restructuring:
+
+1. Run dependency validation.
+2. Resolve every missing package.
+3. Resolve every TypeScript error.
+4. Resolve every Vite configuration issue.
+5. Resolve every import error.
+6. Resolve every build error.
+7. Ensure `npm install` completes successfully.
+8. Ensure `npm run dev` starts without errors.
+9. Ensure `npm run build` completes successfully.
+
+Do NOT rewrite my UI or business logic.
+Do NOT remove implemented features.
+Only modernize, organize, repair, and configure the project so it behaves like a clean Vite + React + TypeScript application.
+
+Continue fixing issues until the project compiles and runs successfully.

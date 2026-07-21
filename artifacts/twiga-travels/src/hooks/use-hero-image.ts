@@ -1,17 +1,21 @@
 import { useTheme } from "@/components/theme-provider"
+import heroSavanna from "@/assets/hero-savanna.jpg"
+import heroNight from "@/assets/hero-night.jpg"
+import heroCoastal from "@/assets/hero-coastal.jpg"
+import heroHighlands from "@/assets/hero-highlands.jpg"
 
 export function useHeroImage() {
   const { theme } = useTheme()
   
   switch (theme) {
     case "safari-night":
-      return "/src/assets/hero-night.jpg"
+      return heroNight
     case "coastal":
-      return "/src/assets/hero-coastal.jpg"
+      return heroCoastal
     case "highlands":
-      return "/src/assets/hero-highlands.jpg"
+      return heroHighlands
     case "savanna":
     default:
-      return "/src/assets/hero-savanna.jpg"
+      return heroSavanna
   }
 }

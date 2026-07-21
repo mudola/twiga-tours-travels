@@ -18,6 +18,8 @@ import Gallery from '@/pages/gallery';
 import Blog from '@/pages/blog';
 import About from '@/pages/about';
 import Contact from '@/pages/contact';
+import BookingFlow from '@/pages/booking';
+import BookingConfirmation from '@/pages/booking-confirmation';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      <Route path="/booking/confirmation" component={BookingConfirmation} />
+      <Route path="/booking" component={BookingFlow} />
       <Route component={NotFound} />
     </Switch>
   );

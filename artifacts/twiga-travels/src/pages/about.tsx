@@ -1,5 +1,6 @@
 import { Layout } from "@/components/layout/Layout"
 import { motion } from "framer-motion"
+import aboutGuide from "@/assets/about-guide.jpg"
 
 export default function About() {
   return (
@@ -24,7 +25,7 @@ export default function About() {
               viewport={{ once: true }}
               className="aspect-square md:aspect-[4/3] rounded-2xl overflow-hidden shadow-xl"
             >
-              <img src="/src/assets/about-guide.jpg" alt="Twiga Guide" className="w-full h-full object-cover" />
+              <img src={aboutGuide} alt="Twiga Guide" className="w-full h-full object-cover" />
             </motion.div>
             <div className="space-y-6">
               <h2 className="text-3xl font-serif font-bold">More Than Just a Safari</h2>
