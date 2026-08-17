@@ -17,6 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { useHealthCheck, useListDestinations } from '@workspace/api-client-react'
 import { useUI } from '@/context/ui-context'
+import { Show, useClerk, useUser } from '@clerk/react'
 
 // ─── Search overlay ──────────────────────────────────────────────────────────
 
@@ -172,15 +173,7 @@ export function Navbar() {
               <Search size={16} />
             </button>
 
-            <button
-              aria-label="Account"
-              className={cn(
-                'w-9 h-9 rounded-full flex items-center justify-center transition-colors',
-                solid ? 'hover:bg-muted text-foreground/70 hover:text-foreground' : 'hover:bg-white/15 text-white/70 hover:text-white',
-              )}
-            >
-              <User size={16} />
-            </button>
+            <AccountControl solid={solid} />
 
             <div className="w-px h-5 bg-border mx-1" />
 
@@ -257,6 +250,7 @@ export function Navbar() {
                   )
                 })}
                 <div className="pt-3 border-t mt-2">
+                  <AccountControl solid />
                   <Button
                     size="lg"
                     className="w-full rounded-xl"
@@ -270,6 +264,56 @@ export function Navbar() {
           )}
         </AnimatePresence>
       </header>
+    </>
+  )
+}
+
+function AccountControl({ solid }: { solid: boolean }) {
+  const { user } = useUser()
+  const { signOut } = useClerk()
+  const [, navigate] = useLocation()
+
+  return (
+    <>
+      <Show when="signed-in">
+        <button
+          aria-label="Open account"
+          onClick={() => navigate('/account')}
+          className={cn(
+            'flex items-center gap-2 rounded-full px-2 py-1.5 transition-colors',
+            solid ? 'hover:bg-muted text-foreground' : 'hover:bg-white/15 text-white',
+          )}
+        >
+          <div className="w-7 h-7 rounded-full bg-primary/15 overflow-hidden flex items-center justify-center text-primary text-xs font-bold">
+            {user?.imageUrl ? <img src={user.imageUrl} alt="" className="w-full h-full object-cover" /> : <User size={15} />}
+          </div>
+          <span className="hidden 2xl:inline text-xs font-semibold max-w-24 truncate">{user?.firstName || 'Account'}</span>
+        </button>
+        <button
+          aria-label="Sign out"
+          onClick={() => signOut({ redirectUrl: import.meta.env.BASE_URL || '/' })}
+          className={cn(
+            'hidden 2xl:block text-xs font-medium transition-colors',
+            solid ? 'text-muted-foreground hover:text-foreground' : 'text-white/70 hover:text-white',
+          )}
+        >
+          Sign out
+        </button>
+      </Show>
+      <Show when="signed-out">
+        <Link
+          href="/sign-in"
+          className={cn(
+            'hidden 2xl:block text-xs font-semibold transition-colors',
+            solid ? 'text-muted-foreground hover:text-foreground' : 'text-white/75 hover:text-white',
+          )}
+        >
+          Sign in
+        </Link>
+        <Button asChild variant={solid ? 'outline' : 'secondary'} size="sm" className="hidden 2xl:flex rounded-full">
+          <Link href="/sign-up">Join free</Link>
+        </Button>
+      </Show>
     </>
   )
 }

@@ -1,9 +1,16 @@
+@layer theme, base, clerk, components, utilities;
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@clerk/themes/shadcn.css';
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
+
+.cl-formFieldInput::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 1;
+}
 
 @theme inline {
   --color-background: hsl(var(--background));

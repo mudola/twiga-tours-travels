@@ -1,0 +1,1 @@
+- [Authentication architecture](auth-architecture.md) — public Clerk sessions and admin JWT auth are intentionally separate.
