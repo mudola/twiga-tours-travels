@@ -9,7 +9,6 @@ import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -57,7 +56,7 @@ export const ListToursResponse = zod.array(ListToursResponseItem)
 
 
 /**
- * @summary Get featured tours for the homepage
+ * @summary Get featured tours
  */
 export const GetFeaturedToursResponseItem = zod.object({
   "id": zod.string(),
@@ -205,5 +204,932 @@ export const CreateInquiryResponse = zod.object({
   "message": zod.string(),
   "created_at": zod.string()
 })
+
+
+/**
+ * @summary Admin login
+ */
+export const AdminLoginBody = zod.object({
+  "email": zod.string(),
+  "password": zod.string()
+})
+
+export const AdminLoginResponse = zod.object({
+  "token": zod.string(),
+  "user": zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.string(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+})
+
+
+/**
+ * @summary Get current admin user
+ */
+export const AdminGetMeResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.string(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Change admin password
+ */
+export const adminChangePasswordBodyNewPasswordMin = 8;
+
+
+
+export const AdminChangePasswordBody = zod.object({
+  "current_password": zod.string(),
+  "new_password": zod.string().min(adminChangePasswordBodyNewPasswordMin)
+})
+
+export const AdminChangePasswordResponse = zod.object({
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Get dashboard stats
+ */
+export const AdminGetDashboardStatsResponse = zod.object({
+  "total_bookings": zod.number(),
+  "total_tours": zod.number(),
+  "total_inquiries": zod.number(),
+  "new_bookings": zod.number(),
+  "pending_bookings": zod.number(),
+  "total_destinations": zod.number(),
+  "total_blog_posts": zod.number(),
+  "total_testimonials": zod.number()
+})
+
+
+/**
+ * @summary List all tours (admin)
+ */
+export const AdminListToursResponseItem = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "destination": zod.string(),
+  "duration_days": zod.number(),
+  "price_from": zod.number(),
+  "summary": zod.string(),
+  "activity_type": zod.string(),
+  "gallery_urls": zod.array(zod.string()),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})),
+  "inclusions": zod.array(zod.string()),
+  "exclusions": zod.array(zod.string()),
+  "is_featured": zod.boolean(),
+  "max_group_size": zod.number().nullish(),
+  "created_at": zod.string()
+})
+export const AdminListToursResponse = zod.array(AdminListToursResponseItem)
+
+
+/**
+ * @summary Create a tour
+ */
+
+
+
+
+export const adminCreateTourBodyPriceFromMin = 0;
+
+
+
+
+export const AdminCreateTourBody = zod.object({
+  "title": zod.string().min(1),
+  "slug": zod.string().min(1),
+  "destination": zod.string().min(1),
+  "duration_days": zod.number().min(1),
+  "price_from": zod.number().min(adminCreateTourBodyPriceFromMin),
+  "summary": zod.string().min(1),
+  "activity_type": zod.string(),
+  "gallery_urls": zod.array(zod.string()).optional(),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})).optional(),
+  "inclusions": zod.array(zod.string()).optional(),
+  "exclusions": zod.array(zod.string()).optional(),
+  "is_featured": zod.boolean().optional(),
+  "max_group_size": zod.number().nullish()
+})
+
+export const AdminCreateTourResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "destination": zod.string(),
+  "duration_days": zod.number(),
+  "price_from": zod.number(),
+  "summary": zod.string(),
+  "activity_type": zod.string(),
+  "gallery_urls": zod.array(zod.string()),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})),
+  "inclusions": zod.array(zod.string()),
+  "exclusions": zod.array(zod.string()),
+  "is_featured": zod.boolean(),
+  "max_group_size": zod.number().nullish(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Get a tour by ID
+ */
+export const AdminGetTourParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminGetTourResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "destination": zod.string(),
+  "duration_days": zod.number(),
+  "price_from": zod.number(),
+  "summary": zod.string(),
+  "activity_type": zod.string(),
+  "gallery_urls": zod.array(zod.string()),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})),
+  "inclusions": zod.array(zod.string()),
+  "exclusions": zod.array(zod.string()),
+  "is_featured": zod.boolean(),
+  "max_group_size": zod.number().nullish(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update a tour
+ */
+export const AdminUpdateTourParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateTourBody = zod.object({
+  "title": zod.string().optional(),
+  "slug": zod.string().optional(),
+  "destination": zod.string().optional(),
+  "duration_days": zod.number().optional(),
+  "price_from": zod.number().optional(),
+  "summary": zod.string().optional(),
+  "activity_type": zod.string().optional(),
+  "gallery_urls": zod.array(zod.string()).optional(),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})).optional(),
+  "inclusions": zod.array(zod.string()).optional(),
+  "exclusions": zod.array(zod.string()).optional(),
+  "is_featured": zod.boolean().optional(),
+  "max_group_size": zod.number().nullish()
+})
+
+export const AdminUpdateTourResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "destination": zod.string(),
+  "duration_days": zod.number(),
+  "price_from": zod.number(),
+  "summary": zod.string(),
+  "activity_type": zod.string(),
+  "gallery_urls": zod.array(zod.string()),
+  "itinerary": zod.array(zod.object({
+  "day": zod.number(),
+  "title": zod.string(),
+  "description": zod.string(),
+  "accommodation": zod.string().nullish(),
+  "meals": zod.string().nullish()
+})),
+  "inclusions": zod.array(zod.string()),
+  "exclusions": zod.array(zod.string()),
+  "is_featured": zod.boolean(),
+  "max_group_size": zod.number().nullish(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a tour
+ */
+export const AdminDeleteTourParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteTourResponse = zod.void()
+
+
+/**
+ * @summary List all destinations (admin)
+ */
+export const AdminListDestinationsResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "description": zod.string().nullish(),
+  "image_url": zod.string().nullish(),
+  "country": zod.string(),
+  "region": zod.string().nullish(),
+  "is_featured": zod.boolean(),
+  "created_at": zod.string()
+})
+export const AdminListDestinationsResponse = zod.array(AdminListDestinationsResponseItem)
+
+
+/**
+ * @summary Create a destination
+ */
+
+
+
+
+export const AdminCreateDestinationBody = zod.object({
+  "name": zod.string().min(1),
+  "slug": zod.string().min(1),
+  "description": zod.string().optional(),
+  "image_url": zod.string().optional(),
+  "country": zod.string(),
+  "region": zod.string().optional(),
+  "is_featured": zod.boolean().optional()
+})
+
+export const AdminCreateDestinationResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "description": zod.string().nullish(),
+  "image_url": zod.string().nullish(),
+  "country": zod.string(),
+  "region": zod.string().nullish(),
+  "is_featured": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update a destination
+ */
+export const AdminUpdateDestinationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateDestinationBody = zod.object({
+  "name": zod.string().optional(),
+  "slug": zod.string().optional(),
+  "description": zod.string().optional(),
+  "image_url": zod.string().optional(),
+  "country": zod.string().optional(),
+  "region": zod.string().optional(),
+  "is_featured": zod.boolean().optional()
+})
+
+export const AdminUpdateDestinationResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "slug": zod.string(),
+  "description": zod.string().nullish(),
+  "image_url": zod.string().nullish(),
+  "country": zod.string(),
+  "region": zod.string().nullish(),
+  "is_featured": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a destination
+ */
+export const AdminDeleteDestinationParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteDestinationResponse = zod.void()
+
+
+/**
+ * @summary List all bookings (admin)
+ */
+export const AdminListBookingsQueryParams = zod.object({
+  "status": zod.coerce.string().optional()
+})
+
+export const AdminListBookingsResponseItem = zod.object({
+  "id": zod.string(),
+  "tour_id": zod.string().nullish(),
+  "tour_title": zod.string().nullish(),
+  "full_name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "travel_start_date": zod.string(),
+  "travel_end_date": zod.string().nullish(),
+  "num_travelers": zod.number(),
+  "accommodation_level": zod.string().nullish(),
+  "special_requests": zod.string().nullish(),
+  "add_ons": zod.array(zod.string()).optional(),
+  "status": zod.string(),
+  "created_at": zod.string()
+})
+export const AdminListBookingsResponse = zod.array(AdminListBookingsResponseItem)
+
+
+/**
+ * @summary Update booking status
+ */
+export const AdminUpdateBookingStatusParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateBookingStatusBody = zod.object({
+  "status": zod.string()
+})
+
+export const AdminUpdateBookingStatusResponse = zod.object({
+  "id": zod.string(),
+  "tour_id": zod.string().nullish(),
+  "tour_title": zod.string().nullish(),
+  "full_name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string(),
+  "travel_start_date": zod.string(),
+  "travel_end_date": zod.string().nullish(),
+  "num_travelers": zod.number(),
+  "accommodation_level": zod.string().nullish(),
+  "special_requests": zod.string().nullish(),
+  "add_ons": zod.array(zod.string()).optional(),
+  "status": zod.string(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary List all inquiries (admin)
+ */
+export const AdminListInquiriesResponseItem = zod.object({
+  "id": zod.string(),
+  "full_name": zod.string(),
+  "email": zod.string(),
+  "phone": zod.string().nullish(),
+  "message": zod.string(),
+  "created_at": zod.string()
+})
+export const AdminListInquiriesResponse = zod.array(AdminListInquiriesResponseItem)
+
+
+/**
+ * @summary Delete an inquiry
+ */
+export const AdminDeleteInquiryParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteInquiryResponse = zod.void()
+
+
+/**
+ * @summary List gallery images
+ */
+export const AdminListGalleryImagesResponseItem = zod.object({
+  "id": zod.string(),
+  "url": zod.string(),
+  "caption": zod.string().nullish(),
+  "category": zod.string(),
+  "sort_order": zod.number(),
+  "created_at": zod.string()
+})
+export const AdminListGalleryImagesResponse = zod.array(AdminListGalleryImagesResponseItem)
+
+
+/**
+ * @summary Add a gallery image
+ */
+
+
+
+export const AdminCreateGalleryImageBody = zod.object({
+  "url": zod.string().min(1),
+  "caption": zod.string().optional(),
+  "category": zod.string().optional(),
+  "sort_order": zod.number().optional()
+})
+
+export const AdminCreateGalleryImageResponse = zod.object({
+  "id": zod.string(),
+  "url": zod.string(),
+  "caption": zod.string().nullish(),
+  "category": zod.string(),
+  "sort_order": zod.number(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a gallery image
+ */
+export const AdminDeleteGalleryImageParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteGalleryImageResponse = zod.void()
+
+
+/**
+ * @summary List testimonials
+ */
+export const AdminListTestimonialsResponseItem = zod.object({
+  "id": zod.string(),
+  "author_name": zod.string(),
+  "author_title": zod.string().nullish(),
+  "avatar_url": zod.string().nullish(),
+  "content": zod.string(),
+  "rating": zod.number(),
+  "is_approved": zod.boolean(),
+  "created_at": zod.string()
+})
+export const AdminListTestimonialsResponse = zod.array(AdminListTestimonialsResponseItem)
+
+
+/**
+ * @summary Create a testimonial
+ */
+
+
+export const adminCreateTestimonialBodyRatingMax = 5;
+
+
+
+export const AdminCreateTestimonialBody = zod.object({
+  "author_name": zod.string().min(1),
+  "author_title": zod.string().optional(),
+  "avatar_url": zod.string().optional(),
+  "content": zod.string().min(1),
+  "rating": zod.number().min(1).max(adminCreateTestimonialBodyRatingMax),
+  "is_approved": zod.boolean().optional()
+})
+
+export const AdminCreateTestimonialResponse = zod.object({
+  "id": zod.string(),
+  "author_name": zod.string(),
+  "author_title": zod.string().nullish(),
+  "avatar_url": zod.string().nullish(),
+  "content": zod.string(),
+  "rating": zod.number(),
+  "is_approved": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update a testimonial
+ */
+export const AdminUpdateTestimonialParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateTestimonialBody = zod.object({
+  "author_name": zod.string().optional(),
+  "author_title": zod.string().optional(),
+  "avatar_url": zod.string().optional(),
+  "content": zod.string().optional(),
+  "rating": zod.number().optional(),
+  "is_approved": zod.boolean().optional()
+})
+
+export const AdminUpdateTestimonialResponse = zod.object({
+  "id": zod.string(),
+  "author_name": zod.string(),
+  "author_title": zod.string().nullish(),
+  "avatar_url": zod.string().nullish(),
+  "content": zod.string(),
+  "rating": zod.number(),
+  "is_approved": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a testimonial
+ */
+export const AdminDeleteTestimonialParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteTestimonialResponse = zod.void()
+
+
+/**
+ * @summary List blog posts
+ */
+export const AdminListBlogPostsResponseItem = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "content": zod.string(),
+  "excerpt": zod.string().nullish(),
+  "featured_image": zod.string().nullish(),
+  "status": zod.string(),
+  "category": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
+  "author_id": zod.string().nullish(),
+  "created_at": zod.string(),
+  "updated_at": zod.string()
+})
+export const AdminListBlogPostsResponse = zod.array(AdminListBlogPostsResponseItem)
+
+
+/**
+ * @summary Create a blog post
+ */
+
+
+
+
+export const AdminCreateBlogPostBody = zod.object({
+  "title": zod.string().min(1),
+  "slug": zod.string().min(1),
+  "content": zod.string(),
+  "excerpt": zod.string().optional(),
+  "featured_image": zod.string().optional(),
+  "status": zod.string().optional(),
+  "category": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional()
+})
+
+export const AdminCreateBlogPostResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "content": zod.string(),
+  "excerpt": zod.string().nullish(),
+  "featured_image": zod.string().nullish(),
+  "status": zod.string(),
+  "category": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
+  "author_id": zod.string().nullish(),
+  "created_at": zod.string(),
+  "updated_at": zod.string()
+})
+
+
+/**
+ * @summary Get a blog post
+ */
+export const AdminGetBlogPostParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminGetBlogPostResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "content": zod.string(),
+  "excerpt": zod.string().nullish(),
+  "featured_image": zod.string().nullish(),
+  "status": zod.string(),
+  "category": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
+  "author_id": zod.string().nullish(),
+  "created_at": zod.string(),
+  "updated_at": zod.string()
+})
+
+
+/**
+ * @summary Update a blog post
+ */
+export const AdminUpdateBlogPostParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateBlogPostBody = zod.object({
+  "title": zod.string().optional(),
+  "slug": zod.string().optional(),
+  "content": zod.string().optional(),
+  "excerpt": zod.string().optional(),
+  "featured_image": zod.string().optional(),
+  "status": zod.string().optional(),
+  "category": zod.string().optional(),
+  "tags": zod.array(zod.string()).optional()
+})
+
+export const AdminUpdateBlogPostResponse = zod.object({
+  "id": zod.string(),
+  "title": zod.string(),
+  "slug": zod.string(),
+  "content": zod.string(),
+  "excerpt": zod.string().nullish(),
+  "featured_image": zod.string().nullish(),
+  "status": zod.string(),
+  "category": zod.string().nullish(),
+  "tags": zod.array(zod.string()),
+  "author_id": zod.string().nullish(),
+  "created_at": zod.string(),
+  "updated_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a blog post
+ */
+export const AdminDeleteBlogPostParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteBlogPostResponse = zod.void()
+
+
+/**
+ * @summary List FAQs
+ */
+export const AdminListFaqsResponseItem = zod.object({
+  "id": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_published": zod.boolean(),
+  "created_at": zod.string()
+})
+export const AdminListFaqsResponse = zod.array(AdminListFaqsResponseItem)
+
+
+/**
+ * @summary Create a FAQ
+ */
+
+
+
+
+export const AdminCreateFaqBody = zod.object({
+  "question": zod.string().min(1),
+  "answer": zod.string().min(1),
+  "category": zod.string().optional(),
+  "sort_order": zod.number().optional(),
+  "is_published": zod.boolean().optional()
+})
+
+export const AdminCreateFaqResponse = zod.object({
+  "id": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_published": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update a FAQ
+ */
+export const AdminUpdateFaqParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateFaqBody = zod.object({
+  "question": zod.string().optional(),
+  "answer": zod.string().optional(),
+  "category": zod.string().optional(),
+  "sort_order": zod.number().optional(),
+  "is_published": zod.boolean().optional()
+})
+
+export const AdminUpdateFaqResponse = zod.object({
+  "id": zod.string(),
+  "question": zod.string(),
+  "answer": zod.string(),
+  "category": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_published": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a FAQ
+ */
+export const AdminDeleteFaqParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteFaqResponse = zod.void()
+
+
+/**
+ * @summary List team members
+ */
+export const AdminListTeamMembersResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "role_title": zod.string(),
+  "bio": zod.string().nullish(),
+  "photo_url": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+export const AdminListTeamMembersResponse = zod.array(AdminListTeamMembersResponseItem)
+
+
+/**
+ * @summary Create a team member
+ */
+
+
+
+
+export const AdminCreateTeamMemberBody = zod.object({
+  "name": zod.string().min(1),
+  "role_title": zod.string().min(1),
+  "bio": zod.string().optional(),
+  "photo_url": zod.string().optional(),
+  "sort_order": zod.number().optional(),
+  "is_active": zod.boolean().optional()
+})
+
+export const AdminCreateTeamMemberResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "role_title": zod.string(),
+  "bio": zod.string().nullish(),
+  "photo_url": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update a team member
+ */
+export const AdminUpdateTeamMemberParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateTeamMemberBody = zod.object({
+  "name": zod.string().optional(),
+  "role_title": zod.string().optional(),
+  "bio": zod.string().optional(),
+  "photo_url": zod.string().optional(),
+  "sort_order": zod.number().optional(),
+  "is_active": zod.boolean().optional()
+})
+
+export const AdminUpdateTeamMemberResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "role_title": zod.string(),
+  "bio": zod.string().nullish(),
+  "photo_url": zod.string().nullish(),
+  "sort_order": zod.number(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete a team member
+ */
+export const AdminDeleteTeamMemberParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteTeamMemberResponse = zod.void()
+
+
+/**
+ * @summary Get all site settings
+ */
+export const AdminGetSettingsResponseItem = zod.object({
+  "key": zod.string(),
+  "value": zod.string()
+})
+export const AdminGetSettingsResponse = zod.array(AdminGetSettingsResponseItem)
+
+
+/**
+ * @summary Update site settings (bulk upsert)
+ */
+export const AdminUpdateSettingsBody = zod.object({
+  "settings": zod.array(zod.object({
+  "key": zod.string(),
+  "value": zod.string()
+}))
+})
+
+export const AdminUpdateSettingsResponseItem = zod.object({
+  "key": zod.string(),
+  "value": zod.string()
+})
+export const AdminUpdateSettingsResponse = zod.array(AdminUpdateSettingsResponseItem)
+
+
+/**
+ * @summary List admin users
+ */
+export const AdminListUsersResponseItem = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.string(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+export const AdminListUsersResponse = zod.array(AdminListUsersResponseItem)
+
+
+/**
+ * @summary Create an admin user
+ */
+
+export const adminCreateUserBodyPasswordMin = 8;
+
+
+
+export const AdminCreateUserBody = zod.object({
+  "name": zod.string().min(1),
+  "email": zod.string(),
+  "password": zod.string().min(adminCreateUserBodyPasswordMin),
+  "role": zod.string()
+})
+
+export const AdminCreateUserResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.string(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Update an admin user
+ */
+export const AdminUpdateUserParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminUpdateUserBody = zod.object({
+  "name": zod.string().optional(),
+  "email": zod.string().optional(),
+  "role": zod.string().optional(),
+  "is_active": zod.boolean().optional()
+})
+
+export const AdminUpdateUserResponse = zod.object({
+  "id": zod.string(),
+  "name": zod.string(),
+  "email": zod.string(),
+  "role": zod.string(),
+  "is_active": zod.boolean(),
+  "created_at": zod.string()
+})
+
+
+/**
+ * @summary Delete an admin user
+ */
+export const AdminDeleteUserParams = zod.object({
+  "id": zod.coerce.string()
+})
+
+export const AdminDeleteUserResponse = zod.void()
 
 

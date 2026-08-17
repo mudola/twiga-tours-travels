@@ -18,6 +18,32 @@ tags:
     description: General inquiries
   - name: destinations
     description: Destination discovery
+  - name: admin-auth
+    description: Admin authentication
+  - name: admin-dashboard
+    description: Admin dashboard
+  - name: admin-tours
+    description: Admin tour management
+  - name: admin-destinations
+    description: Admin destination management
+  - name: admin-bookings
+    description: Admin booking management
+  - name: admin-inquiries
+    description: Admin inquiry management
+  - name: admin-gallery
+    description: Admin gallery management
+  - name: admin-testimonials
+    description: Admin testimonial management
+  - name: admin-blog
+    description: Admin blog management
+  - name: admin-faqs
+    description: Admin FAQ management
+  - name: admin-team
+    description: Admin team management
+  - name: admin-settings
+    description: Admin settings management
+  - name: admin-users
+    description: Admin user management
 
 paths:
   /healthz:
@@ -25,7 +51,6 @@ paths:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -42,32 +67,25 @@ paths:
       parameters:
         - name: destination
           in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: min_duration
           in: query
-          schema:
-            type: integer
+          schema: { type: integer }
         - name: max_duration
           in: query
-          schema:
-            type: integer
+          schema: { type: integer }
         - name: min_price
           in: query
-          schema:
-            type: number
+          schema: { type: number }
         - name: max_price
           in: query
-          schema:
-            type: number
+          schema: { type: number }
         - name: activity_type
           in: query
-          schema:
-            type: string
+          schema: { type: string }
         - name: is_featured
           in: query
-          schema:
-            type: boolean
+          schema: { type: boolean }
       responses:
         "200":
           description: List of tours
@@ -82,7 +100,7 @@ paths:
     get:
       operationId: getFeaturedTours
       tags: [tours]
-      summary: Get featured tours for the homepage
+      summary: Get featured tours
       responses:
         "200":
           description: Featured tours
@@ -115,8 +133,7 @@ paths:
         - name: slug
           in: path
           required: true
-          schema:
-            type: string
+          schema: { type: string }
       responses:
         "200":
           description: Tour detail
@@ -125,7 +142,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Tour"
         "404":
-          description: Tour not found
+          description: Not found
           content:
             application/json:
               schema:
@@ -159,7 +176,7 @@ paths:
               $ref: "#/components/schemas/BookingInput"
       responses:
         "201":
-          description: Booking inquiry submitted
+          description: Booking submitted
           content:
             application/json:
               schema:
@@ -196,255 +213,1395 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  # ── Admin Auth ────────────────────────────────────────────────────────────
+
+  /admin/auth/login:
+    post:
+      operationId: adminLogin
+      tags: [admin-auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/auth/me:
+    get:
+      operationId: adminGetMe
+      tags: [admin-auth]
+      summary: Get current admin user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserProfile"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/auth/change-password:
+    post:
+      operationId: adminChangePassword
+      tags: [admin-auth]
+      summary: Change admin password
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminPasswordChange"
+      responses:
+        "200":
+          description: Password changed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Admin Dashboard ───────────────────────────────────────────────────────
+
+  /admin/dashboard/stats:
+    get:
+      operationId: adminGetDashboardStats
+      tags: [admin-dashboard]
+      summary: Get dashboard stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboardStats"
+
+  # ── Admin Tours ───────────────────────────────────────────────────────────
+
+  /admin/tours:
+    get:
+      operationId: adminListTours
+      tags: [admin-tours]
+      summary: List all tours (admin)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Tours list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tour"
+    post:
+      operationId: adminCreateTour
+      tags: [admin-tours]
+      summary: Create a tour
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTourInput"
+      responses:
+        "201":
+          description: Tour created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tour"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/tours/{id}:
+    get:
+      operationId: adminGetTour
+      tags: [admin-tours]
+      summary: Get a tour by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Tour detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tour"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: adminUpdateTour
+      tags: [admin-tours]
+      summary: Update a tour
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTourUpdate"
+      responses:
+        "200":
+          description: Tour updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tour"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: adminDeleteTour
+      tags: [admin-tours]
+      summary: Delete a tour
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Destinations ────────────────────────────────────────────────────
+
+  /admin/destinations:
+    get:
+      operationId: adminListDestinations
+      tags: [admin-destinations]
+      summary: List all destinations (admin)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Destinations list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminDestination"
+    post:
+      operationId: adminCreateDestination
+      tags: [admin-destinations]
+      summary: Create a destination
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminDestinationInput"
+      responses:
+        "201":
+          description: Destination created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDestination"
+
+  /admin/destinations/{id}:
+    patch:
+      operationId: adminUpdateDestination
+      tags: [admin-destinations]
+      summary: Update a destination
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminDestinationUpdate"
+      responses:
+        "200":
+          description: Destination updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDestination"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: adminDeleteDestination
+      tags: [admin-destinations]
+      summary: Delete a destination
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Bookings ────────────────────────────────────────────────────────
+
+  /admin/bookings:
+    get:
+      operationId: adminListBookings
+      tags: [admin-bookings]
+      summary: List all bookings (admin)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Bookings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+
+  /admin/bookings/{id}/status:
+    patch:
+      operationId: adminUpdateBookingStatus
+      tags: [admin-bookings]
+      summary: Update booking status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminBookingStatusUpdate"
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Admin Inquiries ───────────────────────────────────────────────────────
+
+  /admin/inquiries:
+    get:
+      operationId: adminListInquiries
+      tags: [admin-inquiries]
+      summary: List all inquiries (admin)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Inquiries list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Inquiry"
+
+  /admin/inquiries/{id}:
+    delete:
+      operationId: adminDeleteInquiry
+      tags: [admin-inquiries]
+      summary: Delete an inquiry
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Gallery ─────────────────────────────────────────────────────────
+
+  /admin/gallery:
+    get:
+      operationId: adminListGalleryImages
+      tags: [admin-gallery]
+      summary: List gallery images
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Gallery images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminGalleryImage"
+    post:
+      operationId: adminCreateGalleryImage
+      tags: [admin-gallery]
+      summary: Add a gallery image
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminGalleryImageInput"
+      responses:
+        "201":
+          description: Image added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminGalleryImage"
+
+  /admin/gallery/{id}:
+    delete:
+      operationId: adminDeleteGalleryImage
+      tags: [admin-gallery]
+      summary: Delete a gallery image
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Testimonials ────────────────────────────────────────────────────
+
+  /admin/testimonials:
+    get:
+      operationId: adminListTestimonials
+      tags: [admin-testimonials]
+      summary: List testimonials
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Testimonials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminTestimonial"
+    post:
+      operationId: adminCreateTestimonial
+      tags: [admin-testimonials]
+      summary: Create a testimonial
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTestimonialInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminTestimonial"
+
+  /admin/testimonials/{id}:
+    patch:
+      operationId: adminUpdateTestimonial
+      tags: [admin-testimonials]
+      summary: Update a testimonial
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTestimonialUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminTestimonial"
+    delete:
+      operationId: adminDeleteTestimonial
+      tags: [admin-testimonials]
+      summary: Delete a testimonial
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Blog ────────────────────────────────────────────────────────────
+
+  /admin/blog:
+    get:
+      operationId: adminListBlogPosts
+      tags: [admin-blog]
+      summary: List blog posts
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Blog posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminBlogPost"
+    post:
+      operationId: adminCreateBlogPost
+      tags: [admin-blog]
+      summary: Create a blog post
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminBlogPostInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminBlogPost"
+
+  /admin/blog/{id}:
+    get:
+      operationId: adminGetBlogPost
+      tags: [admin-blog]
+      summary: Get a blog post
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Blog post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminBlogPost"
+    patch:
+      operationId: adminUpdateBlogPost
+      tags: [admin-blog]
+      summary: Update a blog post
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminBlogPostUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminBlogPost"
+    delete:
+      operationId: adminDeleteBlogPost
+      tags: [admin-blog]
+      summary: Delete a blog post
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin FAQs ────────────────────────────────────────────────────────────
+
+  /admin/faqs:
+    get:
+      operationId: adminListFaqs
+      tags: [admin-faqs]
+      summary: List FAQs
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: FAQs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminFaq"
+    post:
+      operationId: adminCreateFaq
+      tags: [admin-faqs]
+      summary: Create a FAQ
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminFaqInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFaq"
+
+  /admin/faqs/{id}:
+    patch:
+      operationId: adminUpdateFaq
+      tags: [admin-faqs]
+      summary: Update a FAQ
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminFaqUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminFaq"
+    delete:
+      operationId: adminDeleteFaq
+      tags: [admin-faqs]
+      summary: Delete a FAQ
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Team ────────────────────────────────────────────────────────────
+
+  /admin/team:
+    get:
+      operationId: adminListTeamMembers
+      tags: [admin-team]
+      summary: List team members
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Team members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminTeamMember"
+    post:
+      operationId: adminCreateTeamMember
+      tags: [admin-team]
+      summary: Create a team member
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTeamMemberInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminTeamMember"
+
+  /admin/team/{id}:
+    patch:
+      operationId: adminUpdateTeamMember
+      tags: [admin-team]
+      summary: Update a team member
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminTeamMemberUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminTeamMember"
+    delete:
+      operationId: adminDeleteTeamMember
+      tags: [admin-team]
+      summary: Delete a team member
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
+  # ── Admin Settings ────────────────────────────────────────────────────────
+
+  /admin/settings:
+    get:
+      operationId: adminGetSettings
+      tags: [admin-settings]
+      summary: Get all site settings
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminSetting"
+    put:
+      operationId: adminUpdateSettings
+      tags: [admin-settings]
+      summary: Update site settings (bulk upsert)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSettingsInput"
+      responses:
+        "200":
+          description: Settings updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminSetting"
+
+  # ── Admin Users ───────────────────────────────────────────────────────────
+
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      tags: [admin-users]
+      summary: List admin users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Admin users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUserProfile"
+    post:
+      operationId: adminCreateUser
+      tags: [admin-users]
+      summary: Create an admin user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserProfile"
+
+  /admin/users/{id}:
+    patch:
+      operationId: adminUpdateUser
+      tags: [admin-users]
+      summary: Update an admin user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUserUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUserProfile"
+    delete:
+      operationId: adminDeleteUser
+      tags: [admin-users]
+      summary: Delete an admin user
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
-        status:
-          type: string
-      required:
-        - status
+        status: { type: string }
 
     Tour:
       type: object
-      required:
-        - id
-        - title
-        - slug
-        - destination
-        - duration_days
-        - price_from
-        - summary
-        - is_featured
-        - activity_type
-        - gallery_urls
-        - itinerary
-        - inclusions
-        - exclusions
-        - created_at
+      required: [id, title, slug, destination, duration_days, price_from, summary, is_featured, activity_type, gallery_urls, itinerary, inclusions, exclusions, created_at]
       properties:
-        id:
-          type: string
-        title:
-          type: string
-        slug:
-          type: string
-        destination:
-          type: string
-        duration_days:
-          type: integer
-        price_from:
-          type: number
-        summary:
-          type: string
-        activity_type:
-          type: string
+        id: { type: string }
+        title: { type: string }
+        slug: { type: string }
+        destination: { type: string }
+        duration_days: { type: integer }
+        price_from: { type: number }
+        summary: { type: string }
+        activity_type: { type: string }
         gallery_urls:
           type: array
-          items:
-            type: string
+          items: { type: string }
         itinerary:
           type: array
           items:
             $ref: "#/components/schemas/ItineraryDay"
         inclusions:
           type: array
-          items:
-            type: string
+          items: { type: string }
         exclusions:
           type: array
-          items:
-            type: string
-        is_featured:
-          type: boolean
-        max_group_size:
-          type: ["integer", "null"]
-        created_at:
-          type: string
+          items: { type: string }
+        is_featured: { type: boolean }
+        max_group_size: { type: ["integer", "null"] }
+        created_at: { type: string }
 
     ItineraryDay:
       type: object
-      required:
-        - day
-        - title
-        - description
+      required: [day, title, description]
       properties:
-        day:
-          type: integer
-        title:
-          type: string
-        description:
-          type: string
-        accommodation:
-          type: ["string", "null"]
-        meals:
-          type: ["string", "null"]
+        day: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        accommodation: { type: ["string", "null"] }
+        meals: { type: ["string", "null"] }
 
     Destination:
       type: object
-      required:
-        - name
-        - tour_count
-        - image_url
+      required: [name, tour_count, image_url]
       properties:
-        name:
-          type: string
-        tour_count:
-          type: integer
-        image_url:
-          type: ["string", "null"]
-        description:
-          type: ["string", "null"]
+        name: { type: string }
+        tour_count: { type: integer }
+        image_url: { type: ["string", "null"] }
+        description: { type: ["string", "null"] }
 
     TourStats:
       type: object
-      required:
-        - total_tours
-        - destinations_count
-        - min_price
-        - max_price
-        - activity_types
+      required: [total_tours, destinations_count, min_price, max_price, activity_types]
       properties:
-        total_tours:
-          type: integer
-        destinations_count:
-          type: integer
-        min_price:
-          type: number
-        max_price:
-          type: number
+        total_tours: { type: integer }
+        destinations_count: { type: integer }
+        min_price: { type: number }
+        max_price: { type: number }
         activity_types:
           type: array
-          items:
-            type: string
+          items: { type: string }
 
     BookingInput:
       type: object
-      required:
-        - full_name
-        - email
-        - phone
-        - travel_start_date
-        - num_travelers
+      required: [full_name, email, phone, travel_start_date, num_travelers]
       properties:
-        tour_id:
-          type: ["string", "null"]
-        tour_title:
-          type: ["string", "null"]
-        full_name:
-          type: string
-          minLength: 1
-        email:
-          type: string
-          minLength: 1
-        phone:
-          type: string
-          minLength: 1
-        travel_start_date:
-          type: string
-        travel_end_date:
-          type: ["string", "null"]
-        num_travelers:
-          type: integer
-          minimum: 1
-        accommodation_level:
-          type: ["string", "null"]
-        special_requests:
-          type: ["string", "null"]
+        tour_id: { type: ["string", "null"] }
+        tour_title: { type: ["string", "null"] }
+        full_name: { type: string, minLength: 1 }
+        email: { type: string, minLength: 1 }
+        phone: { type: string, minLength: 1 }
+        travel_start_date: { type: string }
+        travel_end_date: { type: ["string", "null"] }
+        num_travelers: { type: integer, minimum: 1 }
+        accommodation_level: { type: ["string", "null"] }
+        special_requests: { type: ["string", "null"] }
         add_ons:
           type: array
-          items:
-            type: string
+          items: { type: string }
 
     Booking:
       type: object
-      required:
-        - id
-        - full_name
-        - email
-        - phone
-        - travel_start_date
-        - num_travelers
-        - status
-        - created_at
+      required: [id, full_name, email, phone, travel_start_date, num_travelers, status, created_at]
       properties:
-        id:
-          type: string
-        tour_id:
-          type: ["string", "null"]
-        tour_title:
-          type: ["string", "null"]
-        full_name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: string
-        travel_start_date:
-          type: string
-        travel_end_date:
-          type: ["string", "null"]
-        num_travelers:
-          type: integer
-        accommodation_level:
-          type: ["string", "null"]
-        special_requests:
-          type: ["string", "null"]
+        id: { type: string }
+        tour_id: { type: ["string", "null"] }
+        tour_title: { type: ["string", "null"] }
+        full_name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        travel_start_date: { type: string }
+        travel_end_date: { type: ["string", "null"] }
+        num_travelers: { type: integer }
+        accommodation_level: { type: ["string", "null"] }
+        special_requests: { type: ["string", "null"] }
         add_ons:
           type: array
-          items:
-            type: string
-        status:
-          type: string
-        created_at:
-          type: string
+          items: { type: string }
+        status: { type: string }
+        created_at: { type: string }
 
     InquiryInput:
       type: object
-      required:
-        - full_name
-        - email
-        - message
+      required: [full_name, email, message]
       properties:
-        full_name:
-          type: string
-          minLength: 1
-        email:
-          type: string
-          minLength: 1
-        phone:
-          type: ["string", "null"]
-        message:
-          type: string
-          minLength: 1
+        full_name: { type: string, minLength: 1 }
+        email: { type: string, minLength: 1 }
+        phone: { type: ["string", "null"] }
+        message: { type: string, minLength: 1 }
 
     Inquiry:
       type: object
-      required:
-        - id
-        - full_name
-        - email
-        - message
-        - created_at
+      required: [id, full_name, email, message, created_at]
       properties:
-        id:
-          type: string
-        full_name:
-          type: string
-        email:
-          type: string
-        phone:
-          type: ["string", "null"]
-        message:
-          type: string
-        created_at:
-          type: string
+        id: { type: string }
+        full_name: { type: string }
+        email: { type: string }
+        phone: { type: ["string", "null"] }
+        message: { type: string }
+        created_at: { type: string }
 
     ErrorResponse:
       type: object
-      required:
-        - error
+      required: [error]
       properties:
-        error:
-          type: string
+        error: { type: string }
+
+    SuccessResponse:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+
+    # ── Admin Auth Schemas ────────────────────────────────────────────────────
+
+    AdminLoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    AdminAuthResponse:
+      type: object
+      required: [token, user]
+      properties:
+        token: { type: string }
+        user:
+          $ref: "#/components/schemas/AdminUserProfile"
+
+    AdminUserProfile:
+      type: object
+      required: [id, name, email, role, is_active, created_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+        is_active: { type: boolean }
+        created_at: { type: string }
+
+    AdminPasswordChange:
+      type: object
+      required: [current_password, new_password]
+      properties:
+        current_password: { type: string }
+        new_password: { type: string, minLength: 8 }
+
+    # ── Admin Dashboard Schemas ───────────────────────────────────────────────
+
+    AdminDashboardStats:
+      type: object
+      required: [total_bookings, total_tours, total_inquiries, new_bookings, pending_bookings, total_destinations, total_blog_posts, total_testimonials]
+      properties:
+        total_bookings: { type: integer }
+        total_tours: { type: integer }
+        total_inquiries: { type: integer }
+        new_bookings: { type: integer }
+        pending_bookings: { type: integer }
+        total_destinations: { type: integer }
+        total_blog_posts: { type: integer }
+        total_testimonials: { type: integer }
+
+    # ── Admin Tour Schemas ────────────────────────────────────────────────────
+
+    AdminTourInput:
+      type: object
+      required: [title, slug, destination, duration_days, price_from, summary, activity_type]
+      properties:
+        title: { type: string, minLength: 1 }
+        slug: { type: string, minLength: 1 }
+        destination: { type: string, minLength: 1 }
+        duration_days: { type: integer, minimum: 1 }
+        price_from: { type: number, minimum: 0 }
+        summary: { type: string, minLength: 1 }
+        activity_type: { type: string }
+        gallery_urls:
+          type: array
+          items: { type: string }
+        itinerary:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItineraryDay"
+        inclusions:
+          type: array
+          items: { type: string }
+        exclusions:
+          type: array
+          items: { type: string }
+        is_featured: { type: boolean }
+        max_group_size: { type: ["integer", "null"] }
+
+    AdminTourUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        slug: { type: string }
+        destination: { type: string }
+        duration_days: { type: integer }
+        price_from: { type: number }
+        summary: { type: string }
+        activity_type: { type: string }
+        gallery_urls:
+          type: array
+          items: { type: string }
+        itinerary:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItineraryDay"
+        inclusions:
+          type: array
+          items: { type: string }
+        exclusions:
+          type: array
+          items: { type: string }
+        is_featured: { type: boolean }
+        max_group_size: { type: ["integer", "null"] }
+
+    # ── Admin Destination Schemas ─────────────────────────────────────────────
+
+    AdminDestination:
+      type: object
+      required: [id, name, slug, country, is_featured, created_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: ["string", "null"] }
+        image_url: { type: ["string", "null"] }
+        country: { type: string }
+        region: { type: ["string", "null"] }
+        is_featured: { type: boolean }
+        created_at: { type: string }
+
+    AdminDestinationInput:
+      type: object
+      required: [name, slug, country]
+      properties:
+        name: { type: string, minLength: 1 }
+        slug: { type: string, minLength: 1 }
+        description: { type: string }
+        image_url: { type: string }
+        country: { type: string }
+        region: { type: string }
+        is_featured: { type: boolean }
+
+    AdminDestinationUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        image_url: { type: string }
+        country: { type: string }
+        region: { type: string }
+        is_featured: { type: boolean }
+
+    # ── Admin Booking Schemas ─────────────────────────────────────────────────
+
+    AdminBookingStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string }
+
+    # ── Admin Gallery Schemas ─────────────────────────────────────────────────
+
+    AdminGalleryImage:
+      type: object
+      required: [id, url, category, sort_order, created_at]
+      properties:
+        id: { type: string }
+        url: { type: string }
+        caption: { type: ["string", "null"] }
+        category: { type: string }
+        sort_order: { type: integer }
+        created_at: { type: string }
+
+    AdminGalleryImageInput:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, minLength: 1 }
+        caption: { type: string }
+        category: { type: string }
+        sort_order: { type: integer }
+
+    # ── Admin Testimonial Schemas ─────────────────────────────────────────────
+
+    AdminTestimonial:
+      type: object
+      required: [id, author_name, content, rating, is_approved, created_at]
+      properties:
+        id: { type: string }
+        author_name: { type: string }
+        author_title: { type: ["string", "null"] }
+        avatar_url: { type: ["string", "null"] }
+        content: { type: string }
+        rating: { type: integer }
+        is_approved: { type: boolean }
+        created_at: { type: string }
+
+    AdminTestimonialInput:
+      type: object
+      required: [author_name, content, rating]
+      properties:
+        author_name: { type: string, minLength: 1 }
+        author_title: { type: string }
+        avatar_url: { type: string }
+        content: { type: string, minLength: 1 }
+        rating: { type: integer, minimum: 1, maximum: 5 }
+        is_approved: { type: boolean }
+
+    AdminTestimonialUpdate:
+      type: object
+      properties:
+        author_name: { type: string }
+        author_title: { type: string }
+        avatar_url: { type: string }
+        content: { type: string }
+        rating: { type: integer }
+        is_approved: { type: boolean }
+
+    # ── Admin Blog Schemas ────────────────────────────────────────────────────
+
+    AdminBlogPost:
+      type: object
+      required: [id, title, slug, content, status, tags, created_at, updated_at]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        slug: { type: string }
+        content: { type: string }
+        excerpt: { type: ["string", "null"] }
+        featured_image: { type: ["string", "null"] }
+        status: { type: string }
+        category: { type: ["string", "null"] }
+        tags:
+          type: array
+          items: { type: string }
+        author_id: { type: ["string", "null"] }
+        created_at: { type: string }
+        updated_at: { type: string }
+
+    AdminBlogPostInput:
+      type: object
+      required: [title, slug, content]
+      properties:
+        title: { type: string, minLength: 1 }
+        slug: { type: string, minLength: 1 }
+        content: { type: string }
+        excerpt: { type: string }
+        featured_image: { type: string }
+        status: { type: string }
+        category: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+
+    AdminBlogPostUpdate:
+      type: object
+      properties:
+        title: { type: string }
+        slug: { type: string }
+        content: { type: string }
+        excerpt: { type: string }
+        featured_image: { type: string }
+        status: { type: string }
+        category: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+
+    # ── Admin FAQ Schemas ─────────────────────────────────────────────────────
+
+    AdminFaq:
+      type: object
+      required: [id, question, answer, sort_order, is_published, created_at]
+      properties:
+        id: { type: string }
+        question: { type: string }
+        answer: { type: string }
+        category: { type: ["string", "null"] }
+        sort_order: { type: integer }
+        is_published: { type: boolean }
+        created_at: { type: string }
+
+    AdminFaqInput:
+      type: object
+      required: [question, answer]
+      properties:
+        question: { type: string, minLength: 1 }
+        answer: { type: string, minLength: 1 }
+        category: { type: string }
+        sort_order: { type: integer }
+        is_published: { type: boolean }
+
+    AdminFaqUpdate:
+      type: object
+      properties:
+        question: { type: string }
+        answer: { type: string }
+        category: { type: string }
+        sort_order: { type: integer }
+        is_published: { type: boolean }
+
+    # ── Admin Team Schemas ────────────────────────────────────────────────────
+
+    AdminTeamMember:
+      type: object
+      required: [id, name, role_title, sort_order, is_active, created_at]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        role_title: { type: string }
+        bio: { type: ["string", "null"] }
+        photo_url: { type: ["string", "null"] }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+        created_at: { type: string }
+
+    AdminTeamMemberInput:
+      type: object
+      required: [name, role_title]
+      properties:
+        name: { type: string, minLength: 1 }
+        role_title: { type: string, minLength: 1 }
+        bio: { type: string }
+        photo_url: { type: string }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+
+    AdminTeamMemberUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        role_title: { type: string }
+        bio: { type: string }
+        photo_url: { type: string }
+        sort_order: { type: integer }
+        is_active: { type: boolean }
+
+    # ── Admin Settings Schemas ────────────────────────────────────────────────
+
+    AdminSetting:
+      type: object
+      required: [key, value]
+      properties:
+        key: { type: string }
+        value: { type: string }
+
+    AdminSettingsInput:
+      type: object
+      required: [settings]
+      properties:
+        settings:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdminSetting"
+
+    # ── Admin User Schemas ────────────────────────────────────────────────────
+
+    AdminUserInput:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name: { type: string, minLength: 1 }
+        email: { type: string }
+        password: { type: string, minLength: 8 }
+        role: { type: string }
+
+    AdminUserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        role: { type: string }
+        is_active: { type: boolean }

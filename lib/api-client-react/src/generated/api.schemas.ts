@@ -125,6 +125,312 @@ export interface ErrorResponse {
   error: string;
 }
 
+export interface SuccessResponse {
+  message: string;
+}
+
+export interface AdminLoginInput {
+  email: string;
+  password: string;
+}
+
+export interface AdminUserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AdminAuthResponse {
+  token: string;
+  user: AdminUserProfile;
+}
+
+export interface AdminPasswordChange {
+  current_password: string;
+  /** @minLength 8 */
+  new_password: string;
+}
+
+export interface AdminDashboardStats {
+  total_bookings: number;
+  total_tours: number;
+  total_inquiries: number;
+  new_bookings: number;
+  pending_bookings: number;
+  total_destinations: number;
+  total_blog_posts: number;
+  total_testimonials: number;
+}
+
+export interface AdminTourInput {
+  /** @minLength 1 */
+  title: string;
+  /** @minLength 1 */
+  slug: string;
+  /** @minLength 1 */
+  destination: string;
+  /** @minimum 1 */
+  duration_days: number;
+  /** @minimum 0 */
+  price_from: number;
+  /** @minLength 1 */
+  summary: string;
+  activity_type: string;
+  gallery_urls?: string[];
+  itinerary?: ItineraryDay[];
+  inclusions?: string[];
+  exclusions?: string[];
+  is_featured?: boolean;
+  /** @nullable */
+  max_group_size?: number | null;
+}
+
+export interface AdminTourUpdate {
+  title?: string;
+  slug?: string;
+  destination?: string;
+  duration_days?: number;
+  price_from?: number;
+  summary?: string;
+  activity_type?: string;
+  gallery_urls?: string[];
+  itinerary?: ItineraryDay[];
+  inclusions?: string[];
+  exclusions?: string[];
+  is_featured?: boolean;
+  /** @nullable */
+  max_group_size?: number | null;
+}
+
+export interface AdminDestination {
+  id: string;
+  name: string;
+  slug: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  image_url?: string | null;
+  country: string;
+  /** @nullable */
+  region?: string | null;
+  is_featured: boolean;
+  created_at: string;
+}
+
+export interface AdminDestinationInput {
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  slug: string;
+  description?: string;
+  image_url?: string;
+  country: string;
+  region?: string;
+  is_featured?: boolean;
+}
+
+export interface AdminDestinationUpdate {
+  name?: string;
+  slug?: string;
+  description?: string;
+  image_url?: string;
+  country?: string;
+  region?: string;
+  is_featured?: boolean;
+}
+
+export interface AdminBookingStatusUpdate {
+  status: string;
+}
+
+export interface AdminGalleryImage {
+  id: string;
+  url: string;
+  /** @nullable */
+  caption?: string | null;
+  category: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface AdminGalleryImageInput {
+  /** @minLength 1 */
+  url: string;
+  caption?: string;
+  category?: string;
+  sort_order?: number;
+}
+
+export interface AdminTestimonial {
+  id: string;
+  author_name: string;
+  /** @nullable */
+  author_title?: string | null;
+  /** @nullable */
+  avatar_url?: string | null;
+  content: string;
+  rating: number;
+  is_approved: boolean;
+  created_at: string;
+}
+
+export interface AdminTestimonialInput {
+  /** @minLength 1 */
+  author_name: string;
+  author_title?: string;
+  avatar_url?: string;
+  /** @minLength 1 */
+  content: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  is_approved?: boolean;
+}
+
+export interface AdminTestimonialUpdate {
+  author_name?: string;
+  author_title?: string;
+  avatar_url?: string;
+  content?: string;
+  rating?: number;
+  is_approved?: boolean;
+}
+
+export interface AdminBlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  /** @nullable */
+  excerpt?: string | null;
+  /** @nullable */
+  featured_image?: string | null;
+  status: string;
+  /** @nullable */
+  category?: string | null;
+  tags: string[];
+  /** @nullable */
+  author_id?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AdminBlogPostInput {
+  /** @minLength 1 */
+  title: string;
+  /** @minLength 1 */
+  slug: string;
+  content: string;
+  excerpt?: string;
+  featured_image?: string;
+  status?: string;
+  category?: string;
+  tags?: string[];
+}
+
+export interface AdminBlogPostUpdate {
+  title?: string;
+  slug?: string;
+  content?: string;
+  excerpt?: string;
+  featured_image?: string;
+  status?: string;
+  category?: string;
+  tags?: string[];
+}
+
+export interface AdminFaq {
+  id: string;
+  question: string;
+  answer: string;
+  /** @nullable */
+  category?: string | null;
+  sort_order: number;
+  is_published: boolean;
+  created_at: string;
+}
+
+export interface AdminFaqInput {
+  /** @minLength 1 */
+  question: string;
+  /** @minLength 1 */
+  answer: string;
+  category?: string;
+  sort_order?: number;
+  is_published?: boolean;
+}
+
+export interface AdminFaqUpdate {
+  question?: string;
+  answer?: string;
+  category?: string;
+  sort_order?: number;
+  is_published?: boolean;
+}
+
+export interface AdminTeamMember {
+  id: string;
+  name: string;
+  role_title: string;
+  /** @nullable */
+  bio?: string | null;
+  /** @nullable */
+  photo_url?: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AdminTeamMemberInput {
+  /** @minLength 1 */
+  name: string;
+  /** @minLength 1 */
+  role_title: string;
+  bio?: string;
+  photo_url?: string;
+  sort_order?: number;
+  is_active?: boolean;
+}
+
+export interface AdminTeamMemberUpdate {
+  name?: string;
+  role_title?: string;
+  bio?: string;
+  photo_url?: string;
+  sort_order?: number;
+  is_active?: boolean;
+}
+
+export interface AdminSetting {
+  key: string;
+  value: string;
+}
+
+export interface AdminSettingsInput {
+  settings: AdminSetting[];
+}
+
+export interface AdminUserInput {
+  /** @minLength 1 */
+  name: string;
+  email: string;
+  /** @minLength 8 */
+  password: string;
+  role: string;
+}
+
+export interface AdminUserUpdate {
+  name?: string;
+  email?: string;
+  role?: string;
+  is_active?: boolean;
+}
+
 export type ListToursParams = {
 destination?: string;
 min_duration?: number;
@@ -133,5 +439,9 @@ min_price?: number;
 max_price?: number;
 activity_type?: string;
 is_featured?: boolean;
+};
+
+export type AdminListBookingsParams = {
+status?: string;
 };
 

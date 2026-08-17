@@ -1,0 +1,258 @@
+You are a senior full-stack software engineer.
+
+Build a secure, production-ready Admin CMS for the Twiga Tours & Travels platform.
+
+Goal:
+Allow administrators to manage the entire website from an Admin Dashboard instead of modifying source code.
+
+Technology Stack:
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Node.js + Express
+- PostgreSQL
+- JWT Authentication
+- REST API
+
+=================================================
+AUTHENTICATION
+=================================================
+
+Create secure authentication with:
+
+- Admin Login
+- Logout
+- Change Password
+- Forgot Password
+- Session Management
+- Protected Routes
+- Role-Based Access Control
+
+Roles:
+- Super Admin
+- Admin
+- Content Manager
+- Sales Officer
+- Tour Guide
+- Accountant
+
+=================================================
+ADMIN DASHBOARD
+=================================================
+
+Create a modern dashboard showing:
+
+- Total Bookings
+- Active Tours
+- Customers
+- Revenue
+- Pending Payments
+- Upcoming Trips
+- Recent Activities
+- Notifications
+- Calendar
+- Quick Actions
+
+=================================================
+WEBSITE MANAGEMENT
+=================================================
+
+The admin should be able to update every section of the public website.
+
+Home Page
+- Hero title
+- Hero subtitle
+- Hero image/video
+- Call-to-action buttons
+- Statistics
+- Featured destinations
+
+About Us
+- Company story
+- Mission
+- Vision
+- Team members
+- Certificates
+
+Tours
+- Create tour
+- Edit tour
+- Delete tour
+- Categories
+- Duration
+- Price
+- Itinerary
+- Gallery
+- Availability
+- Featured tours
+
+Destinations
+- Add destinations
+- Upload images
+- Maps
+- Descriptions
+
+Hotels
+- Add hotels
+- Room types
+- Pricing
+- Photos
+- Amenities
+
+Vehicles
+- Add vehicles
+- Images
+- Capacity
+- Pricing
+
+Gallery
+- Upload multiple images
+- Videos
+- Categories
+
+Testimonials
+- Add/Edit/Delete
+- Approve customer reviews
+
+FAQs
+- Manage questions
+- Manage answers
+
+Blog
+- Rich text editor
+- Categories
+- Tags
+- Featured images
+- Publish/Draft
+
+Contact Information
+- Phone
+- Email
+- WhatsApp
+- Office Locations
+- Social Media Links
+
+=================================================
+BOOKING MANAGEMENT
+=================================================
+
+Manage:
+
+- Bookings
+- Customers
+- Booking Status
+- Payment Status
+- Invoices
+- Refunds
+- Tour Assignments
+
+=================================================
+USER MANAGEMENT
+=================================================
+
+Manage:
+
+- Customers
+- Admin Users
+- Permissions
+- Roles
+
+=================================================
+MEDIA LIBRARY
+=================================================
+
+Build a media manager.
+
+Features:
+- Upload images
+- Upload videos
+- Upload PDFs
+- Delete files
+- Search files
+- Preview files
+- Organize folders
+
+=================================================
+SETTINGS
+=================================================
+
+Manage:
+
+- Company Information
+- Logo
+- Favicon
+- Colors
+- SEO
+- Email Settings
+- Payment Settings
+- Taxes
+- Currency
+- Languages
+
+=================================================
+DATABASE
+=================================================
+
+Create PostgreSQL tables for all modules.
+
+Include:
+- Relationships
+- Foreign keys
+- Constraints
+- Timestamps
+
+=================================================
+API
+=================================================
+
+Create REST APIs for CRUD operations.
+
+Use:
+- Validation
+- Error handling
+- Pagination
+- Search
+- Filtering
+
+=================================================
+UI
+=================================================
+
+Create a professional admin dashboard similar in quality to modern SaaS applications.
+
+Include:
+
+- Sidebar navigation
+- Top navigation
+- Breadcrumbs
+- Search
+- Dark Mode
+- Responsive design
+- Charts
+- Tables
+- Cards
+- Modals
+- Toast notifications
+- Confirmation dialogs
+- Loading states
+- Empty states
+
+=================================================
+SECURITY
+=================================================
+
+Implement:
+
+- Password hashing
+- JWT Authentication
+- Input validation
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Secure file uploads
+
+=================================================
+FINAL REQUIREMENT
+=================================================
+
+Every item displayed on the public Twiga Tours & Travels website should be editable from the Admin Dashboard. Changes made in the dashboard should be stored in PostgreSQL and reflected immediately on the public website without requiring code changes or redeployment.
