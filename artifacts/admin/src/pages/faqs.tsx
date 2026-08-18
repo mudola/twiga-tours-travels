@@ -67,7 +67,7 @@ export default function FaqsPage() {
     if (editFaq) {
       updateMutation.mutate({ id: editFaq.id, data: form });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate({ data: form });
     }
   };
 

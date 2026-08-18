@@ -86,7 +86,7 @@ export default function TestimonialsPage() {
     if (editItem) {
       updateMutation.mutate({ id: editItem.id, data: form });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate({ data: form });
     }
   };
 

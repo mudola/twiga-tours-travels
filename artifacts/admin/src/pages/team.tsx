@@ -68,7 +68,7 @@ export default function TeamPage() {
     if (editMember) {
       updateMutation.mutate({ id: editMember.id, data: form });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate({ data: form });
     }
   };
 

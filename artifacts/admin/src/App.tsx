@@ -23,7 +23,8 @@ import UsersPage from '@/pages/users';
 import NotFound from '@/pages/not-found';
 
 // Initialize API config before anything else
-setBaseUrl('/api');
+// Generated API paths already include the /api prefix.
+setBaseUrl(null);
 setAuthTokenGetter(() => localStorage.getItem('admin_token'));
 
 const queryClient = new QueryClient({

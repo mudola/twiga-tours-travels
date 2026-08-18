@@ -39,7 +39,7 @@ export default function LoginPage() {
       toast({ title: 'Missing fields', description: 'Please enter email and password', variant: 'destructive' });
       return;
     }
-    loginMutation.mutate({ email, password });
+    loginMutation.mutate({ data: { email, password } });
   };
 
   return (

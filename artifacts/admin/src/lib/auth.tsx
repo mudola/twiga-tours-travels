@@ -24,7 +24,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    setBaseUrl('/api');
+    // Generated API paths already include the /api prefix.
+    setBaseUrl(null);
     setAuthTokenGetter(() => localStorage.getItem('admin_token'));
   }, []);
 

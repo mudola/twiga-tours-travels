@@ -149,7 +149,7 @@ export default function ToursPage() {
     if (editTour) {
       updateMutation.mutate({ id: editTour.id, data: payload as AdminTourUpdate });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate({ data: payload });
     }
   };
 

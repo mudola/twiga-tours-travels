@@ -116,7 +116,7 @@ export default function GalleryPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={() => createMutation.mutate(form)} disabled={createMutation.isPending || !form.url}>
+            <Button onClick={() => createMutation.mutate({ data: form })} disabled={createMutation.isPending || !form.url}>
               {createMutation.isPending && <Loader2 className="mr-2 w-4 h-4 animate-spin" />}
               Add Image
             </Button>

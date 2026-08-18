@@ -96,7 +96,7 @@ export default function BlogPage() {
     if (editPost) {
       updateMutation.mutate({ id: editPost.id, data: payload });
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate({ data: payload });
     }
   };
 

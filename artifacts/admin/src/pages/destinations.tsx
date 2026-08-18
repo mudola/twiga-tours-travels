@@ -75,7 +75,7 @@ export default function DestinationsPage() {
     if (editDest) {
       updateMutation.mutate({ id: editDest.id, data: form });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate({ data: form });
     }
   };
 

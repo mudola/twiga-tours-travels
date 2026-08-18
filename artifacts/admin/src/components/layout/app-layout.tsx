@@ -32,7 +32,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: me } = useAdminGetMe({
-    query: { enabled: isAuthenticated, retry: false },
+    query: { queryKey: ['admin-me'], enabled: isAuthenticated, retry: false },
   });
 
   useEffect(() => {
